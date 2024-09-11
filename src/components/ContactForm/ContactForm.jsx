@@ -1,10 +1,11 @@
+import { nanoid } from "nanoid";
 // import style from "./ContactForm.module.css";
 
 const ContactForm = ({ onAdd }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     onAdd({
-      id: Date.now(),
+      id: nanoid(),
       name: e.target.elements.name.value,
       number: e.target.elements.number.value,
     });
