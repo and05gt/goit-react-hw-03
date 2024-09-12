@@ -1,31 +1,35 @@
-import { nanoid } from "nanoid";
+import { Formik, Form, Field } from "formik";
 // import style from "./ContactForm.module.css";
 
+const initialValues = {
+  id: "",
+  name: "",
+  number: "",
+};
+
 const ContactForm = ({ onAdd }) => {
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onAdd({
-      id: nanoid(),
-      name: e.target.elements.name.value,
-      number: e.target.elements.number.value,
-    });
-    e.target.reset();
+  const handleSubmit = (values, actions) => {
+    onAdd(values);
+
+    actions.resetForm();
   };
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="name">
-          Name
-          <input type="text" name="name" id="name" />
-        </label>
-        <label htmlFor="number">
-          Number
-          <input type="number" name="number" id="number" />
-        </label>
+      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+        <Form>
+          <label>
+            <span>Name</span>
+            <Field type="text" name="name" />
+          </label>
+          <label>
+            <span>Number</span>
+            <Field type="number" name="number" />
+          </label>
 
-        <button type="submit">Add contact</button>
-      </form>
+          <button type="submit">Add contact</button>
+        </Form>
+      </Formik>
     </div>
   );
 };

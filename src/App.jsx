@@ -1,9 +1,9 @@
-// import { useState } from 'react'
 import ContactForm from "./components/ContactForm/ContactForm";
 import SearchBox from "./components/SearchBox/SearchBox";
 import ContactList from "./components/ContactList/ContactList";
 import "./App.css";
 import { useState } from "react";
+import { nanoid } from "nanoid";
 
 const CONTACTS_DATA = [
   { id: "id-1", name: "Rosie Simpson", number: "459-12-56" },
@@ -21,6 +21,7 @@ function App() {
   };
 
   const handleAddContact = (newContact) => {
+    newContact.id = nanoid();
     setContactsData((prev) => {
       return [...prev, newContact];
     });
