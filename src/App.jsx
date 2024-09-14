@@ -2,7 +2,7 @@ import ContactForm from "./components/ContactForm/ContactForm";
 import SearchBox from "./components/SearchBox/SearchBox";
 import ContactList from "./components/ContactList/ContactList";
 import "./App.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { nanoid } from "nanoid";
 
 const CONTACTS_DATA = [
@@ -13,7 +13,13 @@ const CONTACTS_DATA = [
 ];
 
 function App() {
-  const [contactsData, setContactsData] = useState(CONTACTS_DATA);
+  const [contacts, setContacts] = useState(() => {
+    const savedData = JSON.parse(window.localStorage.getItem("contacts-data"));
+    if (savedData !== null) {
+      return savedData;
+    }
+    return CONTACTS_DATA;
+  });
   const [inputValue, setInputValue] = useState("");
 
   const handleSearch = (e) => {
@@ -22,30 +28,31 @@ function App() {
 
   const handleAddContact = (newContact) => {
     newContact.id = nanoid();
-    setContactsData((prev) => {
+    setContacts((prev) => {
       return [...prev, newContact];
     });
   };
 
   const handleDeleteContact = (contactId) => {
-    setContactsData((prev) => {
+    setContacts((prev) => {
       return prev.filter((contact) => contact.id !== contactId);
     });
   };
 
-  const visibleContacts = contactsData.filter((contact) =>
+  useEffect(() => {
+    window.localStorage.setItem("contacts-data", JSON.stringify(contacts));
+  }, [contacts]);
+
+  const visibleContacts = contacts.filter((contact) =>
     contact.name.toLowerCase().includes(inputValue.toLowerCase())
   );
 
   return (
     <div>
-      <h1>Phonebook</h1>
+      <h1 className="title">Phonebook</h1>
       <ContactForm onAdd={handleAddContact} />
       <SearchBox inputValue={inputValue} onSearch={handleSearch} />
-      <ContactList
-        contactsData={visibleContacts}
-        onDelete={handleDeleteContact}
-      />
+      <ContactList contacts={visibleContacts} onDelete={handleDeleteContact} />
     </div>
   );
 }
